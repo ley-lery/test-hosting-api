@@ -13,12 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const product_model_1 = __importDefault(require("../models/product.model"));
+const response_1 = require("../utils/response");
 class ProductController {
     getAll(res, rp) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const products = yield product_model_1.default.getAll();
-                return rp.status(200).send(products);
+                if (products[0].length === 0) {
+                    return rp.status(404).send({ message: "No products found" });
+                }
+                return (0, response_1.sendSuccessResponse)(rp, true, "Products fetched successfully", {
+                    rows: products[0],
+                });
             }
             catch (error) {
                 console.error("Error fetching products:", error);
